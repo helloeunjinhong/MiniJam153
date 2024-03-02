@@ -24,7 +24,7 @@ public class FishingControl : MonoBehaviour
     void Update()
     {
         //Started Fishing by pressing SPACE
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (InputManager.Get.Input(ActionType.Player_Fishing).IsClicked())
         {
             Debug.Log("Space was pressed");
 

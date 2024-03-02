@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -80,6 +81,8 @@ public partial class InputManager : MonoBehaviour
 
     private static InputManager m_instance = null;
 
+    private bool m_isInitialized = false;
+
     public static InputManager Get
     {
         get
@@ -90,37 +93,43 @@ public partial class InputManager : MonoBehaviour
                 GameObject obj = new GameObject("InputManager");
                 m_instance = obj.AddComponent<InputManager>();
             }
+            m_instance.Initialize();
             //DontDestroyOnLoad(m_instance);
             return m_instance;
         }
     }    
 
-    private void Start()
+    public void Initialize()
     {
-        m_actionMap = new InputActionMap[(int)ActionCategory.Count];
-        for(int i = 0; i < (int)ActionCategory.Count; ++i)
+        if(!m_isInitialized)
         {
-            m_actionMap[i] = m_inputAsset.FindActionMap(ToString((ActionCategory)i));
-            m_actionMap[i].actionTriggered += context=>{ OnActionTriggered(context); };
-        }
-        InitActionTypeRange();
+            m_actionMap = new InputActionMap[(int)ActionCategory.Count];
+            for(int i = 0; i < (int)ActionCategory.Count; ++i)
+            {
+                m_actionMap[i] = m_inputAsset.FindActionMap(ToString((ActionCategory)i));
+                m_actionMap[i].actionTriggered += context=>{ OnActionTriggered(context); };
+            }
+            InitActionTypeRange();
 
-        m_states = new InputState[(int)ActionType.Count];
-        for(int i = 0; i < (int)ActionType.Count; ++i)
-        {
-            m_states[i] = new InputState();
-        }
+            m_states = new InputState[(int)ActionType.Count];
+            for(int i = 0; i < (int)ActionType.Count; ++i)
+            {
+                m_states[i] = new InputState();
+            }
 
-        ChangeInputMap(m_currInputCategory);
-        // Set input event to switch the current input action map
-        m_states[(int)ActionType.Player_ToggleUI].onInputEvent += (InputState state)=> 
-        {
-            if(state.IsClicked()) ChangeInputMap(ActionCategory.UI);
-        };
-        m_states[(int)ActionType.UI_ToggleUI].onInputEvent += (InputState state)=> 
-        {
-            if(state.IsClicked()) ChangeInputMap(ActionCategory.PLAYER);
-        };
+            ChangeInputMap(m_currInputCategory);
+            // Set input event to switch the current input action map
+            m_states[(int)ActionType.Player_ToggleUI].onInputEvent += (InputState state)=> 
+            {
+                if(state.IsClicked()) ChangeInputMap(ActionCategory.UI);
+            };
+            m_states[(int)ActionType.UI_ToggleUI].onInputEvent += (InputState state)=> 
+            {
+                if(state.IsClicked()) ChangeInputMap(ActionCategory.PLAYER);
+            };
+            
+            m_isInitialized = true;
+        }
     }
 
     private void Update()
