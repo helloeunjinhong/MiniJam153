@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public string name;
+    public enum itemType
+    { 
+        EASY,
+        MEDIUM,
+        HARD
+    }
+
 
     // Start is called before the first frame update
     void Start()

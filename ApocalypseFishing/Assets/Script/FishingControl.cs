@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class FishingControl : MonoBehaviour
 {
-    bool isFishing = false;
-    bool isCaught = false;
+    //idle begin waiting catching complete
+    public enum PlayerState
+    { 
+        IDLE, //default state
+        BEGIN, //throw fishing pole
+        WAITING, //wait for arrow key inputs
+        FISHING, //arrow key input
+        COMPLETE //success fail
+    }
+
+
+    public PlayerState playerState;
 
     float time = 0f;
     float timeDelay = 1f;
@@ -16,6 +26,8 @@ public class FishingControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerState = PlayerState.IDLE;
+
         FishingText.SetActive(false);
         CaughtText.SetActive(false);
 
@@ -25,7 +37,6 @@ public class FishingControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     private void OnFishingEvent(InputState inputState)
@@ -33,36 +44,46 @@ public class FishingControl : MonoBehaviour
         if (inputState.IsClicked())
         {
 			Debug.Log("Space was pressed");
-			
-            StartFishing();
+
+            playerState = PlayerState.BEGIN;
+            BeginFishing();
             StartCoroutine(CatchDelay());
 		}
 	}
 
-    void StartFishing()
+    void BeginFishing()
     {
-        Debug.Log("Fishing Started");
+        Debug.Log("Begin");
 
-        isCaught = false;
-        
-        isFishing = true;
+        playerState = PlayerState.BEGIN;
         FishingText.SetActive(true);
     }
 
+
+    //get arrow key inputs.
+    void Fishing()
+    {
+        Debug.Log("Fishing");
+
+        playerState = PlayerState.FISHING;
+    }
+
+
+    //success?
     void CaughtFish()
     {
         Debug.Log("Caught Object");
 
-        isFishing = false;
-        isCaught = true;
-
+        playerState = PlayerState.COMPLETE;
         FishingText.SetActive(false);
         CaughtText.SetActive(true);
     }
 
     private IEnumerator CatchDelay()
     {
+        //playerState = PlayerState.WAITING
         yield return new WaitForSeconds(2);
+        
         CaughtFish();
 
         yield return null;
