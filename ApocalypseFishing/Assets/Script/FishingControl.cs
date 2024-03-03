@@ -18,32 +18,26 @@ public class FishingControl : MonoBehaviour
     {
         FishingText.SetActive(false);
         CaughtText.SetActive(false);
+
+        InputManager.Get.Input(ActionType.Player_Fishing).onInputEvent += OnFishingEvent;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Started Fishing by pressing SPACE
-        if (InputManager.Get.Input(ActionType.Player_Fishing).IsClicked())
-        {
-            Debug.Log("Space was pressed");
 
-			StartFishing();
-        }
-
-        if(isFishing == true)
-        {
-			//calculate time
-			time = time + 1f * Time.deltaTime;
-
-			//after delay
-			if (time >= timeDelay)
-			{
-				CaughtFish();
-                time = 0f;
-			}
-		}
     }
+
+    private void OnFishingEvent(InputState inputState)
+    {
+        if (inputState.IsClicked())
+        {
+			Debug.Log("Space was pressed");
+			
+            StartFishing();
+            StartCoroutine(CatchDelay());
+		}
+	}
 
     void StartFishing()
     {
@@ -66,13 +60,11 @@ public class FishingControl : MonoBehaviour
         CaughtText.SetActive(true);
     }
 
-    void Delay(float seconds)
-    {
-
-    }    
-
     private IEnumerator CatchDelay()
     {
         yield return new WaitForSeconds(2);
+        CaughtFish();
+
+        yield return null;
     }
 }
