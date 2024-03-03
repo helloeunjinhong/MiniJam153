@@ -14,11 +14,9 @@ public class FishingControl : MonoBehaviour
         COMPLETE //success fail
     }
 
-
     public PlayerState playerState;
 
-    float time = 0f;
-    float timeDelay = 1f;
+    
 
     public GameObject FishingText;
     public GameObject CaughtText;
@@ -32,7 +30,7 @@ public class FishingControl : MonoBehaviour
         CaughtText.SetActive(false);
 
         InputManager.Get.Input(ActionType.Player_Fishing).onInputEvent += OnFishingEvent;
-    }
+	}
 
     // Update is called once per frame
     void Update()
@@ -66,6 +64,9 @@ public class FishingControl : MonoBehaviour
         Debug.Log("Fishing");
 
         playerState = PlayerState.FISHING;
+
+        //get move board data from item?
+
     }
 
 
@@ -88,4 +89,14 @@ public class FishingControl : MonoBehaviour
 
         yield return null;
     }
+
+	private IEnumerator PressTimer()
+	{
+		//playerState = PlayerState.WAITING
+		yield return new WaitForSeconds(2);
+
+		CaughtFish();
+
+		yield return null;
+	}
 }

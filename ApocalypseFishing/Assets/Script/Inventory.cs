@@ -5,11 +5,11 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
 
-    private List<Item> itemList;
+    private List<GameObject> itemList;
 
     public Inventory()
     {
-        itemList = new List<Item>();
+
     }
     // Start is called before the first frame update
     void Start()
@@ -23,12 +23,12 @@ public class Inventory : MonoBehaviour
         
     }
 
-    public void AddItem(Item item)
+    public void AddItem(GameObject item)
     {
         itemList.Add(item);
     }
 
-    public List<Item> GetItemList()
+    public List<GameObject> GetItemList()
     {
         return itemList;
     }
